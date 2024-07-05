@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect } from "react";
 import { auth } from "./firebase.config";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const AuthContext = createContext({
   currentUser: null,
@@ -11,10 +12,27 @@ const AuthContext = createContext({
 
 const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = auth.onAuthStateChanged(async(user) => {
       setCurrentUser(user);
+      setIsLoading(false);
+      if (user) {
+        try {
+          // Store user ID securely using a dedicated key and encryption (optional)
+          const userEmail = user.email;
+      
+          await AsyncStorage.setItem('UserEmail', userEmail); // Use a dedicated key for storage
+        } catch (error) {
+          console.error("Error storing user data:", error);
+        }
+      } else {
+        // Remove user data from storage if user signs out
+        await AsyncStorage.removeItem('UserEmail');
+      }
     });
 
     return unsubscribe;
@@ -34,6 +52,7 @@ const AuthProvider = ({ children }) => {
     }
   };
 
+
   const signIn = async (email, password) => {
     try {
       const userCredential = await signInWithEmailAndPassword(
@@ -50,6 +69,7 @@ const AuthProvider = ({ children }) => {
   const signOut = async () => {
     try {
       await auth.signOut();
+      await AsyncStorage.removeItem('UserEmail');
       setCurrentUser(null);
     } catch (error) {
       console.error("Error during sign out:", error);
