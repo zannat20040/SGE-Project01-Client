@@ -13,11 +13,11 @@ import {
   Raleway_900Black,
 } from "@expo-google-fonts/raleway";
 import { useFonts } from "expo-font";
-import Signup from "./src/Layout/Signup";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Login from "./src/Layout/Login";
 import Root from "./src/Layout/Root";
+import Signup from "./src/Layout/Signup";
 
 const Stack = createStackNavigator();
 

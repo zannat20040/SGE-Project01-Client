@@ -1,45 +1,65 @@
-import { StyleSheet, View, TextInput } from "react-native";
-import React, { useState } from "react";
+import { StyleSheet, View, TextInput, Alert } from "react-native";
+import React, { useContext, useState } from "react";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { Button, Checkbox, Text } from "react-native-paper";
 import { ScrollView } from "react-native";
+import MainHeading from "../Component/MainHeading";
+import ActionButton from "../Component/ActionButton";
+import { useNavigation } from "@react-navigation/native";
+import { auth } from "../../firebase.config";
+import { AuthContext } from "../../AuthContext";
 
-export default function Login() {
+export default function Loginpg() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(true);
   const [checked, setChecked] = useState(false);
+  const { signIn } = useContext(AuthContext);
 
-  const handleAuthentication = () => {
-    const data = {
-      email,
-      password,
-    };
+  const navigation = useNavigation();
 
-    console.warn(data);
+  const navigateToSignup = () => {
+    navigation.navigate("Signup");
   };
 
+  const navigateToRoot = () => {
+    navigation.navigate("Root");
+  };
+  const HandleError = () => {
+    setPassword("");
+    setEmail("");
+  };
+
+  const handleLogin = async () => {
+    try {
+      signIn(email, password); // Call signIn directly
+      Alert.alert("Success", "Login Success!", [
+        {
+          text: "Ok",
+          onPress: navigateToRoot,
+          style: "default",
+        },
+      ]);
+    } catch (error) {
+      Alert.alert("Error", error.message, [
+        {
+          text: "Ok",
+          onPress: () => HandleError,
+          style: "default",
+        },
+      ]);
+    }
+  };
+
+  const isButtonDisabled = !(email.length > 0 && password.length > 0);
+
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
-      <View style={styles.logoContainer}>
-        <Icon.Button
-          name="react"
-          backgroundColor="transparent"
-          color="#7367f0"
-          size={70}
-          style={{ padding: 0 }}
-        ></Icon.Button>
-      </View>
-
-      <View style={styles.welcomeContainer}>
-        <Text style={styles.welcomeText} variant="titleLarge">
-          Welcome to Shabuj Global Education!!
-        </Text>
-        <Text style={styles.welcomeBottomText} variant="titleMedium">
-          Please sign-in to your account and start the adventure{" "}
-        </Text>
-      </View>
-
+    <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
+      {/* text & logo */}
+      <MainHeading
+        subheading={"Please sign-in to your account and start the adventure"}
+      />
+      {/* email */}
       <View>
         <Text style={styles.inputLabel} variant="titleLarge">
           Email
@@ -52,6 +72,7 @@ export default function Login() {
         />
       </View>
 
+      {/* passwrd */}
       <View>
         <Text style={styles.inputLabel} variant="titleLarge">
           Password
@@ -75,6 +96,7 @@ export default function Login() {
         </View>
       </View>
 
+      {/* remember */}
       <View
         style={{
           alignItems: "center",
@@ -97,26 +119,13 @@ export default function Login() {
         </Text>
       </View>
 
-      <View>
-        <Button
-          mode="elevated"
-          buttonColor="#7367f0"
-          textColor="white"
-          onPress={handleAuthentication}
-          labelStyle={{
-            fontFamily: "Raleway_700Bold",
-          }}
-          style={{
-            borderRadius: 6,
-          }}
-          contentStyle={{
-            padding: 5,
-          }}
-        >
-          Login
-        </Button>
-      </View>
+      <ActionButton
+        label={"Login"}
+        handlefunction={handleLogin}
+        disabled={isButtonDisabled}
+      />
 
+      {/* botton text */}
       <View
         style={{
           paddingVertical: 15,
@@ -135,6 +144,7 @@ export default function Login() {
               { color: "#7367f0", fontSize: 15 },
             ]}
             variant="titleMedium"
+            onPress={navigateToSignup}
           >
             Create an account
           </Text>
@@ -145,49 +155,39 @@ export default function Login() {
 }
 
 const styles = StyleSheet.create({
-    logoContainer: {
-        alignItems: "center",
-        marginTop: 20,
-      },
-    
-      headingText: {
-        fontSize: 22,
-        fontFamily: "Raleway_700Bold",
-      },
-      welcomeContainer: {
-        marginTop: 40,
-        marginBottom: 50,
-      },
-      welcomeText: {
-        fontFamily: "Raleway_500Medium",
-        marginBottom: 10,
-      },
-      welcomeBottomText: {
-        fontFamily: "Raleway_400Regular",
-        color: "gray",
-      },
-      inputLabel: {
-        fontFamily: "Raleway_400Regular",
-        fontSize: 16,
-        marginBottom: 5,
-      },
-      textInput: {
-        backgroundColor: "white",
-        borderColor: "#e7e7e9",
-        borderWidth: 1,
-        marginBottom: 10,
-        paddingHorizontal: 10,
-        paddingVertical: 10,
-        borderRadius: 6,
-      },
-      passwordContainer: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        borderColor: "#e7e7e9",
-        borderWidth: 1,
-        paddingHorizontal: 10,
-        paddingVertical: 8,
-        borderRadius: 6,
-      },
-    });
+  container: {
+    paddingHorizontal: 15,
+    flex: 1,
+    backgroundColor: "white",
+  },
+  welcomeBottomText: {
+    fontFamily: "Raleway_400Regular",
+    color: "gray",
+    textAlign: "center",
+  },
+
+  inputLabel: {
+    fontFamily: "Raleway_400Regular",
+    fontSize: 14,
+    marginBottom: 5,
+  },
+  textInput: {
+    backgroundColor: "white",
+    borderColor: "#e7e7e9",
+    borderWidth: 1,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    borderRadius: 6,
+  },
+  passwordContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    borderColor: "#e7e7e9",
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderRadius: 6,
+  },
+});
