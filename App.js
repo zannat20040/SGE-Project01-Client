@@ -14,7 +14,7 @@ import {
 } from "@expo-google-fonts/raleway";
 import { useFonts } from "expo-font";
 import Login from "./src/Layout/Login";
-import Signup from "./src/Layout/Sgnup";
+import Signup from "./src/Layout/Signup";
 
 
 export default function App() {
