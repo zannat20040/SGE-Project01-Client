@@ -13,6 +13,8 @@ import {
   Raleway_900Black,
 } from "@expo-google-fonts/raleway";
 import { useFonts } from "expo-font";
+import Login from "./src/Layout/Login";
+import Signup from "./src/Layout/Sgnup";
 
 
 export default function App() {
@@ -37,7 +39,8 @@ export default function App() {
   return (
      <PaperProvider>
       <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
+        {/* <Login /> */}
+        <Signup />
         <StatusBar style="auto" />
       </View>
     </PaperProvider>
