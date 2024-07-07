@@ -49,18 +49,16 @@ export default function App() {
       <SafeAreaView style={{ flex: 1 }}>
         <StatusBar barStyle="dark-content" backgroundColor="white" />
         <NavigationContainer>
-          <AuthProvider>
-            <Stack.Navigator
-              screenOptions={{
-                headerShown: false, // Hide the header
-              }}
-              initialRouteName={user ? "Root" : "Login"}
-            >
-              <Stack.Screen name="Login" component={Login} />
-              <Stack.Screen name="Signup" component={Signup} />
-              <Stack.Screen name="Root" component={Root} />
-            </Stack.Navigator>
-          </AuthProvider>
+          <Stack.Navigator
+            screenOptions={{
+              headerShown: false, // Hide the header
+            }}
+            initialRouteName="Login"
+          >
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="Signup" component={Signup} />
+            <Stack.Screen name="Root" component={Root} />
+          </Stack.Navigator>
         </NavigationContainer>
       </SafeAreaView>
     </PaperProvider>
